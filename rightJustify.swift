@@ -16,7 +16,7 @@ func rightjustify(s: String) {
     print(temp)
 }
 
-let closure = {
+let justifyingClosure = {
     (s: String) -> String
     in
     var temp = s 
@@ -33,9 +33,9 @@ let closure = {
      return temp
 }
 
-func new(s: String) {
-    let justified = closure(s)
+func rightjustify1(s: String, isJustified: (String) -> String) {
+    let justified = isJustified(s)
     print(justified)
 }
 
-rightjustify(s: "monty")
+rightjustify1(s: "monty", isJustified: justifyingClosure)

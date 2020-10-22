@@ -23,17 +23,17 @@ let oddSumClosure = {
     return false
 }
 
-func oddSum1(n: Int) -> Int {
-    let odd = oddSumClosure(n)
+func oddSum1(n: Int, comparator: (Int) -> Bool) -> Int {
+    let odd = comparator(n)
     if n > 0 {
         if(odd == true) {
-            return n + oddSum1(n: n-1)
+            return n + oddSum1(n: n-1, comparator: comparator)
         }
         else {
-            return oddSum1(n: n-1)
+            return oddSum1(n: n-1, comparator: comparator)
         }
     }
     return 0
 }
 
-print(oddSum1(n: 25))
+print(oddSum1(n: 25, comparator: oddSumClosure))

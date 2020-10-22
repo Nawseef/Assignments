@@ -25,7 +25,7 @@ func song(number: inout Int) {
 
 }
 
-let closure = {
+let anyBottle = {
     (number: Int) -> Bool
     in
     if number <= 0 {
@@ -35,8 +35,8 @@ let closure = {
     return true
 }
 
-func song1(number: inout Int) {
-    let bottleAvailable = closure(number)
+func song1(number: inout Int, comparator: (Int) -> Bool) {
+    let bottleAvailable = comparator(number)
     if(bottleAvailable) {
           print("""
                \(number) bottles of water on the wall,
@@ -62,4 +62,4 @@ func song1(number: inout Int) {
 }
 
 var a = 3
-song(number: &a)
+song1(number: &a, comparator: anyBottle)
