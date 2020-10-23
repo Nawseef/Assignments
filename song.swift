@@ -1,5 +1,6 @@
 func song(number: inout Int) {
-    if number <= 0 {
+
+    if(number <= 0) {
         print("""
               No bottles of water on the wall,
               no bottles of water,
@@ -8,9 +9,7 @@ func song(number: inout Int) {
               """)
     
         return;
-    }
-  
-    else if number > 0 {
+    } else if (number > 0) {
         print("""
                \(number) bottles of water on the wall,
                \(number) bottles of water,
@@ -25,18 +24,9 @@ func song(number: inout Int) {
 
 }
 
-let anyBottle = {
-    (number: Int) -> Bool
-    in
-    if number <= 0 {
-        return false
-    }
-
-    return true
-}
-
 func song1(number: inout Int, comparator: (Int) -> Bool) {
     let bottleAvailable = comparator(number)
+
     if(bottleAvailable) {
           print("""
                \(number) bottles of water on the wall,
@@ -48,9 +38,7 @@ func song1(number: inout Int, comparator: (Int) -> Bool) {
 
           number -= 1
           song(number: &number)
-    }
-    
-    else {
+    } else {
         print("""
               No bottles of water on the wall,
               no bottles of water,
@@ -59,7 +47,10 @@ func song1(number: inout Int, comparator: (Int) -> Bool) {
               """)
         return;
     }
+
 }
 
 var a = 3
-song1(number: &a, comparator: anyBottle)
+song1(number: &a) {
+    ($0 <= 0) ? false : true
+}

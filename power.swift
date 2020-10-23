@@ -1,14 +1,14 @@
 func pow(base x: Int, power n: Int) -> Int {
 
-    if n != 0 {
-        if n % 2 == 0 {
+    if(n != 0) {
+
+        if(n % 2 == 0) {
           return pow(base: x, power: (n/2)) * pow(base: x, power: (n/2))
-        }
-        else {
+        } else {
             return x * pow(base: x, power: (n-1))
         }
-    }
-    else {
+
+    } else {
         return 1
     }
 
@@ -17,17 +17,24 @@ func pow(base x: Int, power n: Int) -> Int {
 let pow1 = {
     (x: Int, n: Int) -> Int
     in
-    if n != 0 {
-        if n % 2 == 0 {
-          return pow(base: x, power: (n/2)) * pow(base: x, power: (n/2))
+    var answer = x
+
+    if(n != 0) {
+
+        if(n == 1) {
+          return x
         }
-        else {
-            return x * pow(base: x, power: (n-1))
+
+        for _ in 2...n {
+            answer = answer * x
         }
-    }
-    else {
+
+        return answer
+
+    } else {
         return 1
     }
+
 }
 
-print(pow1(3, 3))
+print(pow1(5, 4))

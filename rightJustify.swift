@@ -5,9 +5,7 @@ func rightjustify(s: String) {
 
         if(temp.count<70) {
             temp = " " + temp
-        }
-
-        else{
+        } else {
             break;
         }
 
@@ -24,8 +22,7 @@ let justifyingClosure = {
     for _ in 1...70 {
         if(temp.count<70) {
             temp = " " + temp
-        }
-        else{
+        } else {
             break;
         }
     }
