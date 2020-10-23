@@ -25,5 +25,22 @@ func checkFermat(a: Int, b: Int, c: Int, n: Int)
     }
 
 }
+
+let checkFermatClosure = {
+    (a: Int, b: Int, c: Int, n: Int)
+    in
+    if(n<3) {
+        print("change \(n) to anything greater than 2")
+        return;
+    }
+
+    if(pow(a, n) + pow(b, n) == pow(c,n)) {
+        print("Holy smokes, Fermat was wrong!")
+    }
+
+    else{
+        print("No, that doesn’t work.")
+    }
+}
  
-checkFermat(a: 2, b: 4, c: 5, n: 3)
+checkFermatClosure(2, 4, 5, 3)
