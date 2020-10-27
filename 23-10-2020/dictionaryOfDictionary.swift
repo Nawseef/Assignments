@@ -8,11 +8,18 @@ func dictionaryOfDictionary(dic: [String: Any], search: String) {
         if(newDict.keys.contains(array[i])) {
             if let temp = newDict[array[i]] as? [String: Any] { 
                 newDict = temp
+            } else if(i == lastString) {
+                if let temp = newDict[array[i]] {
+                    print(temp)
+                }
             } else {
-                print(newDict[array[i]]!)
+                print("\(array[i]) doesn't have a key \(array[i+1])")
+                break
             }
+
         } else {
             print("\(array[i]) is wrong key")
+            break
         }
     }
 }
@@ -21,35 +28,35 @@ var dictionary: [String: Any] =
 [ 
     "A0001": [
         "Name": "ABC",
-        "Age": "20",
+        "Age": 20,
         "Branch": "CS",
         "Marks": [
-            "Chemistry": "83",
-            "Maths": "88",
-            "English": "90"
+            "Chemistry": 83,
+            "Maths": 88,
+            "English": 90
         ]
     ],
     "A0002": [
         "Name": "DEF",
-        "Age": "22",
+        "Age": 22,
         "Branch": "EC",
         "Marks": [
-            "Chemistry": "76",
-            "Maths": "45",
-            "English": "55"
+            "Chemistry": 76,
+            "Maths": 45,
+            "English": 55
         ]
     ],
     "A0003": [
         "Name": "XYZ",
-        "Age": "23",
+        "Age": 23,
         "Branch": "ME",
         "Marks": [
-            "Chemistry": "60",
-            "Maths": "12",
-            "English": "32"
+            "Chemistry": 60,
+            "Maths": 12,
+            "English": 32
         ]
     ]
 ]  
 
-var stringOfKeys = "A0003:Marks:English"
+var stringOfKeys = "A0003:Marks:Maths"
 dictionaryOfDictionary(dic: dictionary, search: stringOfKeys)
