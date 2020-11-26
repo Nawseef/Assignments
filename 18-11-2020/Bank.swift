@@ -5,13 +5,13 @@ protocol BankProtocol {
 }
 
 class Bank {
+
     let name: String
     let ifscCode: String
     let location: String
     var accManager = [BankProtocol]()
     lazy var noOfAccount = 0
     
-
     init(name: String, ifscCode: String, location: String)
     {
         self.name = name
@@ -29,10 +29,10 @@ class Bank {
         }
     }
 
-
 }
 
 class AccountManager {
+
     let name: String
     var accounts = [String: Account]()    //[Account Number: instance Name]
 
@@ -47,20 +47,20 @@ class AccountManager {
     func currentBalance(accountNumber: String) {
         for (key, _) in accounts {
             if(key == accountNumber) {
+
                 if let account = accounts[key] {
                     print(account.balance)
-                    return;
-                } else {
-                    print("Wrong Account Number")
                     return;
                 }
             } 
         }
+        print("Wrong Account Number")
     }
 
     func accountDetails(accountNumber: String) {
         for (key, _) in accounts {
             if(key == accountNumber) {
+
                 if let account = accounts[key] {
                     print(account.accountHolderName)
                     if let mailId = account.email {
@@ -69,24 +69,28 @@ class AccountManager {
                     if let phone = account.phoneNumber {
                         print(phone)
                     }
-                } else {
-                    print("Wrosng Account Number")
+                    return;
                 }
+
             } 
         }
+        print("Wrong Account Number")
     }
 
     func accountSummary(accountNumber: String) {
         for (key, _) in accounts {
             if(key == accountNumber) {
+
                 if let account = accounts[key] {
                     print(account.statements)
-                } else {
-                    print("Wrong Account Number")
+                    return;
                 }
+
             } 
         }
+        print("Wrong Account Number")
     }
+
 }
 
 extension AccountManager: BankProtocol {
@@ -96,6 +100,7 @@ extension AccountManager: BankProtocol {
 }
 
 class Account {
+
     let accountHolderName: String
     let email: String?
     let phoneNumber: String?
@@ -120,7 +125,9 @@ class Account {
     }
 
     func deposit(amount: Float) {
+
         if(isDeposit) {
+
             balance += amount
             print("Amount of \(amount) is credited to your account \(self.accountNumber), balance: \(balance)")
             
@@ -133,27 +140,32 @@ class Account {
         } else {
             print("Deposit is not allowed in this account")
         }
+
     }
 
     func wihdraw(amount: Float) {
         if(isWihdraw) {
+
             if(balance >= amount) {
+
                 balance -= amount
                 print("Amount of \(amount) is dedited from your account \(self.accountNumber), balance: \(balance)")
 
                 if(statements.count < 10) {
                 statements.append("\(amount) dedited")
-            } else {
-                statements.removeFirst()
-            }
+                } else {
+                    statements.removeFirst()
+                }
 
             } else {
                 print("Insufficient Funds")
             }
+
         } else {
             print("Withdraw is not allowed in this account")
         }
     }
+
 }
 
 enum CasaAccountType {
@@ -161,6 +173,7 @@ enum CasaAccountType {
 }
 
 class CasaAccount: Account {
+
     let myType: CasaAccountType
     let rateOFInterest: Float = 0.08               //8%
 
@@ -194,6 +207,7 @@ enum DepositAccountType {
 }
 
 class DepositAccount: Account {
+
     let myType: DepositAccountType
     let rateOFInterest: Float = 0.06
     var termOfDeposit: Float
@@ -229,6 +243,7 @@ enum LoanAccountType {
 }
 
 class LoanAccount: Account {
+
     let myType: LoanAccountType
     let rateOFInterest: Float = 0.04
 
@@ -260,6 +275,64 @@ class LoanAccount: Account {
 
 }
 
+enum Service {
+        case deposit, wihdraw, balanceCheck, statementCheck
+    }
+
+class BankOperations {
+
+    var requests = [(Account, Service, Float)]()
+
+    func enqueue(account: Account, service: Service, amount: Float = 0.0) {
+        requests.append((account, service, amount))
+    }
+
+    func dequeue() {
+
+        if requests.isEmpty {
+            print("no items")
+        } else {
+            requests.removeFirst()
+        }
+
+    }
+
+    func operate() {
+
+        if(requests.count>0) {
+
+            for i in 0..<requests.count {
+            
+                let account = requests[i].0
+                let service = requests[i].1
+                let amount = requests[i].2
+
+                switch service {
+                    case .deposit: 
+                            account.deposit(amount: amount)
+                    case .wihdraw: 
+                            account.wihdraw(amount: amount)
+                    case .balanceCheck: 
+                            print(account.balance)
+                    case .statementCheck: 
+                            print(account.statements)
+                }
+
+            }
+
+            for _ in 0..<requests.count {
+                dequeue()
+            }
+
+            print("Operation completed")
+
+        } else {
+            print("No requests remaining")
+        }
+
+    }
+}
+
 let vijaya = Bank(name: "Vijaya Bank", ifscCode: "VIJB0001436", location: "Mangalore")
 
 let accManager = AccountManager(name: "Roy")
@@ -281,23 +354,29 @@ accManager.addAccount(account: acc5)
 accManager.addAccount(account: acc6)
 
 print(acc1.accountNumber)
-print(acc1.balance)
-acc1.deposit(amount: 5000)
-acc1.deposit(amount: 6000)
-acc1.wihdraw(amount: 4000)
-acc1.wihdraw(amount: 2000)
-acc1.deposit(amount: 7000)
-acc1.deposit(amount: 5000)
-acc1.wihdraw(amount: 1000)
-acc1.deposit(amount: 8000)
+print("----------------------------------------------------------------------------")
 
-print(acc1.balance)
-print(acc1.statements)
-print(acc1.accureInterest())
+var requestQueue = BankOperations()
 
-print(accManager.currentBalance(accountNumber: "1436000000001"))
-print(accManager.accountDetails(accountNumber: "1436000000001"))
-print(accManager.accountSummary(accountNumber: "1436000000001"))
+requestQueue.enqueue(account: acc1, service: .balanceCheck)
+requestQueue.enqueue(account: acc1, service: .deposit, amount: 5000)
+requestQueue.enqueue(account: acc2, service: .deposit, amount: 6000)
+requestQueue.enqueue(account: acc2, service: .balanceCheck)
+requestQueue.enqueue(account: acc1, service: .wihdraw, amount: 2000)
+requestQueue.enqueue(account: acc1, service: .balanceCheck)
+requestQueue.enqueue(account: acc1, service: .statementCheck)
+requestQueue.enqueue(account: acc3, service: .deposit, amount: 10000)
 
-vijaya.recieveNumberofAccounts()
-print(vijaya.noOfAccount)
+
+requestQueue.operate()
+print("----------------------------------------------------------------------------")
+requestQueue.operate()
+print("----------------------------------------------------------------------------")
+requestQueue.operate()
+print("----------------------------------------------------------------------------")
+
+
+accManager.currentBalance(accountNumber: "1436000000002")
+accManager.accountDetails(accountNumber: "1436000000002")
+accManager.accountSummary(accountNumber: "1436000000002")
+
