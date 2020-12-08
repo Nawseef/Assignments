@@ -104,24 +104,30 @@ class Account {
     let accountHolderName: String
     let email: String?
     let phoneNumber: String?
+    weak var bank: Bank?
 
     var balance: Float = 0.0
     var isDeposit = false, isWihdraw = false
     var statements = [String]()
-    static var number = 1436000000000
+    static var startingIndex = 100000000
     var accountNumber = ""
 
-    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?) {
+    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, bank: Bank) {
         self.accountHolderName = accountHolderName
         self.email = email
         self.phoneNumber = phoneNumber
+        self.bank = bank
         self.balance = initialDesposit
         statements.append("\(initialDesposit) credited")
     }
 
     func generateAccountNumber() {
-        Account.number += 1
-        self.accountNumber = String (Account.number)
+        Account.startingIndex += 1
+        var ifsc = ""
+        if let temp = bank {
+            ifsc = temp.ifscCode
+        }
+        self.accountNumber = ifsc.suffix(4) + String (Account.startingIndex)
     }
 
     func deposit(amount: Float) {
@@ -177,10 +183,10 @@ class CasaAccount: Account {
     let myType: CasaAccountType
     let rateOFInterest: Float = 0.08               //8%
 
-    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, myType: CasaAccountType) {
+    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, bank: Bank, myType: CasaAccountType) {
         self.myType = myType
 
-        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber)
+        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber, bank: bank)
         super.generateAccountNumber()
         self.assignType()
     }
@@ -212,11 +218,11 @@ class DepositAccount: Account {
     let rateOFInterest: Float = 0.06
     var termOfDeposit: Float
 
-    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, myType: DepositAccountType, termOfDeposit: Float) {
+    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String, bank: Bank, myType: DepositAccountType, termOfDeposit: Float) {
         self.myType = myType
         self.termOfDeposit = termOfDeposit
 
-        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber)
+        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber, bank: bank)
         super.generateAccountNumber()
         self.assignType()
     }
@@ -247,10 +253,10 @@ class LoanAccount: Account {
     let myType: LoanAccountType
     let rateOFInterest: Float = 0.04
 
-    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, myType: LoanAccountType) {
+    init(accountHolderName: String, initialDesposit: Float, email: String?, phoneNumber: String?, bank: Bank, myType: LoanAccountType) {
         self.myType = myType
 
-        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber)
+        super.init(accountHolderName: accountHolderName, initialDesposit: initialDesposit, email: email, phoneNumber: phoneNumber, bank: bank)
         super.generateAccountNumber()
         self.assignType()
     }
@@ -339,12 +345,12 @@ let accManager = AccountManager(name: "Roy")
 vijaya.addAccountManager(accountManager: accManager)
 
 
-let acc1 = CasaAccount(accountHolderName: "Suresh", initialDesposit: 5000, email: nil, phoneNumber: nil, myType: .savings)
-let acc2 = CasaAccount(accountHolderName: "Adil", initialDesposit: 10000, email: "adil@gmail.com", phoneNumber: nil, myType: .current)
-let acc3 = DepositAccount(accountHolderName: "Ganesh", initialDesposit: 500, email: nil, phoneNumber: "990043", myType: .fixed, termOfDeposit: 4)
-let acc4 = DepositAccount(accountHolderName: "Sara", initialDesposit: 6000, email: "sara@gmail.com", phoneNumber: "995083", myType: .recurring, termOfDeposit: 3)
-let acc5 = LoanAccount(accountHolderName: "Adrian", initialDesposit: 15000, email: nil, phoneNumber: nil, myType: .personalLoan)
-let acc6 = LoanAccount(accountHolderName: "Arjun", initialDesposit: 7000, email: "arjun@gmail.com", phoneNumber: "948944", myType: .homeLoan)
+let acc1 = CasaAccount(accountHolderName: "Suresh", initialDesposit: 5000, email: nil, phoneNumber: nil, bank: vijaya, myType: .savings)
+let acc2 = CasaAccount(accountHolderName: "Adil", initialDesposit: 10000, email: "adil@gmail.com", phoneNumber: nil, bank: vijaya, myType: .current)
+let acc3 = DepositAccount(accountHolderName: "Ganesh", initialDesposit: 500, email: nil, phoneNumber: "990043", bank: vijaya, myType: .fixed, termOfDeposit: 4)
+let acc4 = DepositAccount(accountHolderName: "Sara", initialDesposit: 6000, email: "sara@gmail.com", phoneNumber: "995083", bank: vijaya, myType: .recurring, termOfDeposit: 3)
+let acc5 = LoanAccount(accountHolderName: "Adrian", initialDesposit: 15000, email: nil, phoneNumber: nil, bank: vijaya, myType: .personalLoan)
+let acc6 = LoanAccount(accountHolderName: "Arjun", initialDesposit: 7000, email: "arjun@gmail.com", phoneNumber: "948944", bank: vijaya, myType: .homeLoan)
 
 accManager.addAccount(account: acc1)
 accManager.addAccount(account: acc2)
@@ -376,7 +382,7 @@ requestQueue.operate()
 print("----------------------------------------------------------------------------")
 
 
-accManager.currentBalance(accountNumber: "1436000000002")
-accManager.accountDetails(accountNumber: "1436000000002")
-accManager.accountSummary(accountNumber: "1436000000002")
+accManager.currentBalance(accountNumber: "1436100000002")
+accManager.accountDetails(accountNumber: "1436100000002")
+accManager.accountSummary(accountNumber: "1436100000002")
 
